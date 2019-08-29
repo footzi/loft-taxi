@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export const Header = p => {
+export const Header = () => {
   const classes = useStyles();
   const AdapterLink = React.forwardRef((props, ref) => (
     <RouterLink innerRef={ref} {...props} />
@@ -39,7 +39,7 @@ export const Header = p => {
         <Typography variant="h6" component="h2" className={classes.title}>
           Loft Taxi
         </Typography>
-        <Router>
+        {/* <Router>
           <Button component={AdapterLink} to="/map">
             Карта
           </Button>
@@ -49,7 +49,7 @@ export const Header = p => {
           <Button component={AdapterLink} to="/login">
             Войти
           </Button>
-        </Router>
+        </Router> */}
       </Grid>
     </AppBar>
   );
