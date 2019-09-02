@@ -1,18 +1,14 @@
-// Реализуйте редьюсер
-import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import { setAuth, removeAuth } from './actions';
+import { setAuth } from './actions';
+import { load } from '../../localstorage';
 
 const auth = handleActions(
   {
-    [setAuth]: (_state, action) => action.payload
+  [setAuth]: (_state, action) => action.payload,
   },
-  ''
+  load('auth')
 );
 
-export default combineReducers({
-  auth
-});
+export default auth;
 
-// export const getIsAuthorized = state => (state.auth.apiKey ? true : false);
-// export const getApiKey = state => state.auth.apiKey;
+export const getIsAuthorized = state => state.auth;

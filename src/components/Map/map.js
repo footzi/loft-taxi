@@ -1,10 +1,13 @@
 import React, { useEffect, useRef } from "react";
+import { connect } from "react-redux";
+import { getProfile } from "../../modules/Profile";
 import styled from "styled-components";
-import { Filling } from "../Filling";
+import Filling from "../Filling";
+import Calling from "../Calling";
 
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 
-export const Map = () => {
+const Map = ({ profile }) => {
   const mapContainer = useRef();
 
   useEffect(() => {
@@ -20,9 +23,9 @@ export const Map = () => {
   }, []);
 
   return (
-    <View >
+    <View>
       <Container ref={mapContainer} />
-      <Filling />
+      {profile ? <Calling /> : <Filling />}
     </View>
   );
 };
@@ -37,4 +40,8 @@ const Container = styled.div`
 const View = styled.div`
   position: relative;
   z-index: -10;
-`
+`;
+
+export default connect(state => ({
+  profile: getProfile(state)
+}))(Map);

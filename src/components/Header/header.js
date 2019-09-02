@@ -1,7 +1,6 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
-import { MemoryRouter as Router } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from '../Link';
 import AppBar from "@material-ui/core/AppBar";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -23,9 +22,6 @@ const useStyles = makeStyles(theme => ({
 
 export const Header = () => {
   const classes = useStyles();
-  const AdapterLink = React.forwardRef((props, ref) => (
-    <RouterLink innerRef={ref} {...props} />
-  ));
 
   return (
     <AppBar position="static" color="default" className={classes.header}>
@@ -39,17 +35,15 @@ export const Header = () => {
         <Typography variant="h6" component="h2" className={classes.title}>
           Loft Taxi
         </Typography>
-        {/* <Router>
-          <Button component={AdapterLink} to="/map">
-            Карта
-          </Button>
-          <Button component={AdapterLink} to="/">
-            Профиль
-          </Button>
-          <Button component={AdapterLink} to="/login">
-            Войти
-          </Button>
-        </Router> */}
+        <Button component={Link} to="/map">
+          Карта
+        </Button>
+        <Button component={Link} to="/profile">
+          Профиль
+        </Button>
+        <Button component={Link} to="/login">
+          Войти
+        </Button>
       </Grid>
     </AppBar>
   );
