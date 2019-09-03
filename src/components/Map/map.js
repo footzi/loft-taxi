@@ -1,31 +1,51 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { getProfile } from "../../modules/Profile";
 import styled from "styled-components";
 import Filling from "../Filling";
 import Calling from "../Calling";
+import Posted from "../Posted";
+import * as config from "./config";
 
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 
 const Map = ({ profile }) => {
   const mapContainer = useRef();
+  const id = useRef("");
+  const [map, setMap] = useState("");
+  const [coords, setCoords] = useState([]);
+  const [isOrder, setIsOrder] = useState(false);
+
+  const removeLayout = () => {
+    map.removeLayer(id.current);
+    setIsOrder(false);
+  };
 
   useEffect(() => {
-    mapboxgl.accessToken =
-      "pk.eyJ1IjoiZm9vdHppIiwiYSI6ImNqenU3aW9uajAwbHQzbW1yYjRlcGd5dHYifQ.JuyDnQXJ44WSLErdhTQO5g";
+    mapboxgl.accessToken = config.token;
 
-    new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v9",
-      center: [30.2656504, 59.8029126],
-      zoom: 15
-    });
+    const map = new mapboxgl.Map(config.getInit(mapContainer.current));
+
+    setMap(map);
   }, []);
+
+  useEffect(() => {
+    if (coords.length) {
+      id.current = Date.now().toFixed();
+
+      map.addLayer(config.getLayout(id.current, coords));
+      map.flyTo(config.getFlyData(coords[0]));
+
+      setIsOrder(true);
+    }
+  }, [coords, map]);
 
   return (
     <View>
       <Container ref={mapContainer} />
-      {profile ? <Calling /> : <Filling />}
+      {isOrder && <Posted removeLayout={removeLayout} />}
+      {profile && !isOrder && <Calling setCoords={setCoords} />}
+      {!profile && <Filling />}
     </View>
   );
 };

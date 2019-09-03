@@ -1,41 +1,43 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { Header } from "./components/Header";
+import { Provider } from "react-redux";
+import Header from "./components/Header";
 import { GlobalStyle } from "./globalStyles";
-import { ContainerV } from "./components/Container";
+import Container from "./components/Container";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Map from "./components/Map";
 import PrivateRoute from "./components/PrivateRoute";
+import createStore from "./store";
 
-const App = () => {
-  return (
-    <>
-      <GlobalStyle />
-      <BrowserRouter>
-        <Header />
-        <Switch>
-          <Route
-            path="/login"
-            component={() => (
-              <ContainerV>
-                <Login />
-              </ContainerV>
-            )}
-          />
-          <PrivateRoute
-            path="/profile"
-            component={() => (
-              <ContainerV>
-                <Profile />
-              </ContainerV>
-            )}
-          />
-          <PrivateRoute path="/map" component={Map} />
-        </Switch>
-      </BrowserRouter>
-    </>
-  );
-};
+const store = createStore();
+
+const App = () => (
+  <Provider store={store}>
+    <GlobalStyle />
+    <BrowserRouter>
+      <Header />
+      <Switch>
+        <Route
+          path="/login"
+          component={() => (
+            <Container>
+              <Login />
+            </Container>
+          )}
+        />
+        <PrivateRoute
+          path="/profile"
+          component={() => (
+            <Container>
+              <Profile />
+            </Container>
+          )}
+        />
+        <PrivateRoute path="/map" component={Map} />
+      </Switch>
+    </BrowserRouter>
+  </Provider>
+);
 
 export default App;

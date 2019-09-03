@@ -1,5 +1,5 @@
 import { takeEvery, put, fork } from "redux-saga/effects";
-import { submitProfile, setProfile } from "./actions";
+import { submitProfile, setProfile, removeProfile } from "./actions";
 import { save } from "../../localstorage";
 
 function* setProfileUser() {
@@ -9,6 +9,15 @@ function* setProfileUser() {
   });
 }
 
+function* removeProfileUser() {
+  yield takeEvery(removeProfile, function*() {
+    yield put(setProfile(''));
+    save("profile", '');
+  });
+}
+
+
 export default function*() {
   yield fork(setProfileUser);
+  yield fork(removeProfileUser);
 }

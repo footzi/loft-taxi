@@ -1,36 +1,41 @@
 import React from "react";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from '../Link';
+import { Link } from "../Link";
+import { getIsAuthorized, removeAuth } from "../../modules/Auth";
+import { removeProfile } from "../../modules/Profile";
 import AppBar from "@material-ui/core/AppBar";
-import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   header: {
     backgroundColor: "#ffffff"
-  },
-  grid: {
-    paddingLeft: 24,
-    paddingRight: 24,
-    minHeight: 64
   },
   title: {
     flexGrow: 1
   }
 }));
 
-export const Header = () => {
+const Header = ({ isAuthorized, removeAuth, removeProfile }) => {
   const classes = useStyles();
+
+  const logout = () => {
+    removeAuth();
+    removeProfile();
+  };
 
   return (
     <AppBar position="static" color="default" className={classes.header}>
-      <Grid
-        container
-        direction="row"
-        justify="center"
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="center"
         alignItems="center"
-        className={classes.grid}
+        minHeight={64}
+        pr={2}
+        pl={2}
       >
         <Typography variant="h6" component="h2" className={classes.title}>
           Loft Taxi
@@ -41,10 +46,21 @@ export const Header = () => {
         <Button component={Link} to="/profile">
           Профиль
         </Button>
-        <Button component={Link} to="/login">
-          Войти
-        </Button>
-      </Grid>
+        {isAuthorized ? (
+          <Button onClick={logout}>Выйти</Button>
+        ) : (
+          <Button component={Link} to="/login">
+            Войти
+          </Button>
+        )}
+      </Box>
     </AppBar>
   );
 };
+
+export default connect(
+  state => ({
+    isAuthorized: getIsAuthorized(state)
+  }),
+  { removeAuth, removeProfile }
+)(Header);

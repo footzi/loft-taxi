@@ -1,4 +1,4 @@
-function load(localStorageKey) {
+export const load = localStorageKey => {
   const stringData = window.localStorage.getItem(localStorageKey);
   let data = null;
 
@@ -7,10 +7,8 @@ function load(localStorageKey) {
   } catch (e) {}
 
   return data;
-}
+};
 
-function save(localStorageKey, data) {
+export const save = (localStorageKey, data) => {
   window.localStorage.setItem(localStorageKey, JSON.stringify(data));
 }
-
-export { load, save };

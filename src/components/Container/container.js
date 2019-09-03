@@ -1,37 +1,15 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/core/styles";
+import Box from "@material-ui/core/Box";
 
-import { Calling } from '../Calling';
-import { Profile } from '../Profile';
-import { Map } from '../Map';
+const Container = ({ children }) => (
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    minHeight="calc(100vh - 64px)"
+  >
+    {children}
+  </Box>
+);
 
-const useStyles = makeStyles(theme => ({
-  // !FIX
-  container: {
-    minHeight: "100vh"
-  }
-}));
-
-export const ContainerV = ({children}) => {
-  const classes = useStyles();
-
-  return (
-    <Grid
-      container
-      direction="row"
-      justify="center"
-      alignItems="center"
-      className={classes.container}
-    >
-      {children}
-      {/* <Login /> */}
-      {/* <Calling /> */}
-      {/* <Filling /> */}
-      {/* <Profile /> */}
-      {/* <Map /> */}
-      
-
-    </Grid>
-  );
-};
+export default Container;

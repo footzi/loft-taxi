@@ -1,5 +1,5 @@
 import { takeEvery, put, fork } from "redux-saga/effects";
-import { submitLogin, setAuth } from "./actions";
+import { submitLogin, removeAuth, setAuth } from "./actions";
 import { save } from "../../localstorage";
 
 function* setAuthorization() {
@@ -9,6 +9,14 @@ function* setAuthorization() {
   });
 }
 
+function* removeAuthorization() {
+  yield takeEvery(removeAuth, function*() {
+    yield put(setAuth(false));
+    save("auth", false);
+  });
+}
+
 export default function*() {
   yield fork(setAuthorization);
+  yield fork(removeAuthorization);
 }

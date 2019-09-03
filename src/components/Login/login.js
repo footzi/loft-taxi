@@ -1,6 +1,7 @@
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import axios from "axios";
 import { Redirect } from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -8,14 +9,10 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { reduxForm, Field } from "redux-form";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import { reduxForm, Field, SubmissionError } from "redux-form";
 import { submitLogin } from "../../modules/Auth/actions";
 import { getIsAuthorized } from "../../modules/Auth";
-
-const user = {
-  name: "2",
-  password: "2"
-};
 
 const Input = ({ input, meta: { touched, error }, ...rest }) => (
   <TextField
@@ -29,15 +26,36 @@ const Input = ({ input, meta: { touched, error }, ...rest }) => (
 );
 
 const requiredValidate = value => (value ? undefined : "Это обязательное поле");
-const loginValidate = value =>  (value === user.name ? undefined : "Неверный логин")
-const passwordValidate = value =>  (value === user.name ? undefined : "Неверный пароль")
 
-const Login = ({ handleSubmit, submitLogin, isAuthorized }) => {
+const Login = ({ handleSubmit, submitLogin, isAuthorized, error }) => {
+  const onSubmit = async value => {
+    const { username, password } = value;
+
+    return axios
+      .get(
+        `https://loft-taxi.glitch.me/auth?username=${username}&password=${password}`
+      )
+      .then(response => {
+        const { data } = response;
+
+        if (data.success) {
+          submitLogin();
+        } else {
+          throw new Error(data.error);
+        }
+      })
+      .catch(error => {
+        throw new SubmissionError({
+          _error: error.message
+        });
+      });
+  };
+
   if (isAuthorized) return <Redirect to="/map" />;
 
   return (
     <Grid item sm={3}>
-      <form onSubmit={handleSubmit(() => submitLogin())}>
+      <form onSubmit={handleSubmit(value => onSubmit(value))}>
         <Box p={3} my={4}>
           {props => (
             <Paper {...props}>
@@ -48,13 +66,13 @@ const Login = ({ handleSubmit, submitLogin, isAuthorized }) => {
               </Box>
               <Box py={1}>
                 <Field
-                  name="name"
+                  name="username"
                   type="text"
-                  id="name"
+                  id="username"
                   label="Имя пользователя"
                   required
                   component={Input}
-                  validate={[requiredValidate, loginValidate]}
+                  validate={[requiredValidate]}
                 />
               </Box>
               <Box py={1}>
@@ -65,9 +83,10 @@ const Login = ({ handleSubmit, submitLogin, isAuthorized }) => {
                   label="Пароль"
                   required
                   component={Input}
-                  validate={[requiredValidate, passwordValidate]}
+                  validate={[requiredValidate]}
                 />
               </Box>
+              <FormHelperText error={true}> {error} </FormHelperText>
               <Box py={2}>
                 <Button variant="outlined" color="primary" type="submit">
                   ВОЙТИ
